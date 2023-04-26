@@ -32,5 +32,8 @@ module.exports = {
     "arrow-body-style": "off",
     "no-param-reassign": "off",
     "no-use-before-define": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-unused-vars": "off",
+    "import/no-extraneous-dependencies": "off",
   },
 };
