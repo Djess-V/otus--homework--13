@@ -1,5 +1,7 @@
 const path = require("path"),
-  HtmlWebpackPlugin = require("html-webpack-plugin");
+  HtmlWebpackPlugin = require("html-webpack-plugin"),
+  MiniCssExtractPlugin = require("mini-css-extract-plugin"),
+  CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 
 module.exports = () => ({
   entry: { index: path.resolve(__dirname, "./src/index.ts") },
@@ -23,13 +25,29 @@ module.exports = () => ({
           loader: "babel-loader",
         },
       },
+      {
+        test: /\.s[ac]ss$/i,
+        exclude: /node_modules/,
+        use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
+      },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        type: "asset/resource",
+        generator: {
+          filename: "images/[name][ext]",
+        },
+      },
     ],
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: "index.html",
     }),
+    new MiniCssExtractPlugin(),
   ],
+  optimization: {
+    minimizer: [`...`, new CssMinimizerPlugin()],
+  },
   devServer: {
     compress: true,
     port: 9000,
