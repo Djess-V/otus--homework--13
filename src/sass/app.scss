@@ -1,0 +1,232 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Ysabeau";
+}
+
+body {
+  background-color: rgb(80, 78, 78);
+  padding: 20px;
+}
+
+@media (max-width: 500px) {
+  body {
+    padding: 0;
+  }
+}
+
+hr {
+  margin: 15px 0px;
+}
+
+._container {
+  max-width: 1000px;
+  background-color: rgb(219, 231, 231);
+  margin: 0px auto;
+  border-radius: 5px;
+}
+
+@media (max-width: 500px) {
+  ._container {
+    border-radius: 0;
+  }
+}
+
+._button {
+  border-radius: 3px;
+  border: none;
+  transition: all 1s;
+  background-color: rgb(127, 162, 228);
+  font-weight: 600;
+  padding: 10px 20px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgb(60, 111, 204);
+  }
+}
+
+._input {
+  width: 100%;
+  max-width: 300px;
+  outline: none;
+  height: 30px;
+  border-radius: 3px;
+  border: none;
+  padding: 10px 20px;
+  transition: all 1s;
+  caret-color: chocolate;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+@media (max-width: 420px) {
+  ._input {
+    width: 250px;
+  }
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem;
+
+  &__title {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  &__tasks {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: 0 0 10px 0;
+  }
+}
+
+@media (max-width: 500px) {
+  .app {
+    padding: 1.5rem 10px;
+  }
+}
+
+.form-search {
+  text-align: center;
+  width: 100%;
+  padding: 10px;
+
+  &__inpit {
+    margin-right: 1rem;
+  }
+
+  &__message {
+    margin-top: 10px;
+    opacity: 0;
+    color: rgb(182, 48, 48);
+  }
+}
+
+@media (max-width: 705px) {
+  .form-search {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .form-search__inpit {
+    margin-right: 0;
+  }
+
+  .form-search__button {
+    margin-top: 10px;
+  }
+}
+
+.app-buttons-up {
+  align-self: flex-start;
+  margin: 10px 0 20px;
+
+  &__button-filter {
+    margin-right: 15px;
+  }
+}
+
+@media (max-width: 369px) {
+  .app-buttons-up__button-fetch-all {
+    margin-top: 10px;
+  }
+}
+
+.app__message {
+  display: none;
+  color: rgb(182, 48, 48);
+}
+
+.task {
+  display: flex;
+  font-size: 1.2rem;
+  font-weight: 500;
+  width: 100%;
+
+  & * {
+    text-align: center;
+  }
+
+  &:not(:first-child) {
+    margin-bottom: 10px;
+  }
+}
+
+@media (max-width: 620px) {
+  .task {
+    font-size: 1rem;
+  }
+}
+
+.task-header {
+  font-weight: 600;
+}
+
+@media (max-width: 999px) {
+  .task-header {
+    display: none;
+  }
+}
+
+.task__text {
+  width: 510px;
+}
+
+.text-task {
+  text-align: left;
+}
+
+.task__options_type_status {
+  width: 90px;
+}
+
+.task__options_type_update {
+  width: 115px;
+}
+
+.task__options_type_delete {
+  width: 95px;
+}
+
+.task__createdAt {
+  width: 160px;
+}
+
+@media (max-width: 500px) {
+  .task__createdAt {
+    font-size: 0.7rem;
+  }
+}
+
+.status__input {
+  cursor: pointer;
+}
+
+._task-button {
+  width: 25px;
+  height: 25px;
+  border: none;
+  cursor: pointer;
+}
+
+.update__button {
+  background: url("../assets/images/pencil.svg") no-repeat;
+  background-size: contain;
+}
+
+.delete__button {
+  background: url("../assets/images/trashcan.svg") no-repeat;
+  background-size: contain;
+}
+
+.app__button-create-task {
+  align-self: flex-start;
+}
