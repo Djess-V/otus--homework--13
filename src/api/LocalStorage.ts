@@ -1,247 +1,140 @@
+import _ from "lodash";
 import { Task } from "./Task";
-import { readFromStorage } from "../storage/readFromStorage";
-import { saveInStorage } from "../storage/saveInStorage";
-import { filterData } from "./constants";
-
-interface ICreateTask {
-  (task: Task): Promise<Task[]>;
-}
-
-interface IFetchAll {
-  (): Promise<Task[]>;
-}
-
-interface ISearch {
-  (text: string): Promise<Task[]>;
-}
-
-interface IDelete {
-  (id: string): Promise<Task[]>;
-}
-
-interface IUpdate {
-  (id: string, text?: string, status?: boolean): Promise<Task[]>;
-}
-
-interface ISortBy {
-  (parametr1: string, parametr2: string): Promise<Task[]>;
-}
-
-interface ICreateStorage {
-  (): Promise<Task[]>;
-}
+import { IValue } from "./constants";
 
 export class LocalStorage {
-  static createStorage: ICreateStorage = () => {
-    return new Promise((res, rej) => {
-      const tasks = readFromStorage();
+  dbName: string;
 
-      if (tasks.length === 0) {
-        tasks.push(new Task("Создать задачу", "задача") as never);
+  tasks: Task[] = [];
 
-        saveInStorage(tasks);
-      }
+  constructor(dbName: string) {
+    this.dbName = dbName;
+  }
 
-      res(tasks);
-    });
+  createStorage = async (): Promise<Task[]> => {
+    this.tasks = await this.readFromStorage();
+
+    if (this.tasks.length === 0) {
+      this.tasks.push(new Task("Создать задачу", "задача"));
+
+      this.saveInStorage(this.tasks);
+    }
+
+    return this.tasks;
   };
 
-  static fetchAll: IFetchAll = () => {
-    return new Promise((res, rej) => {
-      const tasks = readFromStorage();
-      res(tasks);
-    });
+  fetchAll = async (): Promise<Task[]> => {
+    this.tasks = await this.readFromStorage();
+    return this.tasks;
   };
 
-  static search: ISearch = (text) => {
-    return new Promise((res, rej) => {
-      let tasks = readFromStorage();
+  search = async (text: string): Promise<Task[]> => {
+    this.tasks = await this.readFromStorage();
 
-      tasks = tasks.filter((task) => task.text.toLowerCase().includes(text));
+    this.tasks = this.tasks.filter((task) =>
+      task.text.toLowerCase().includes(text)
+    );
 
-      res(tasks);
-    });
+    return this.tasks;
   };
 
-  static createTask: ICreateTask = (task) => {
-    return new Promise((res, rej) => {
-      const tasks = readFromStorage();
+  createTask = async (task: Task): Promise<Task[]> => {
+    this.tasks = await this.readFromStorage();
 
-      tasks.push(task as never);
+    this.tasks.push(task);
 
-      saveInStorage(tasks);
+    await this.saveInStorage(this.tasks);
 
-      res(tasks);
-    });
+    return this.tasks;
   };
 
-  static delete: IDelete = (id) => {
-    return new Promise((res, rej) => {
-      let tasks = readFromStorage();
+  delete = async (id: string): Promise<Task[]> => {
+    this.tasks = await this.readFromStorage();
 
-      tasks = tasks.filter((task) => task.id !== id);
+    this.tasks = this.tasks.filter((task) => task.id !== id);
 
-      saveInStorage(tasks);
+    await this.saveInStorage(this.tasks);
 
-      res(tasks);
-    });
+    return this.tasks;
   };
 
-  static update: IUpdate = (id, text, status) => {
-    return new Promise((res, rej) => {
-      let tasks = readFromStorage();
+  update = async (
+    id: string,
+    text?: string,
+    status?: boolean
+  ): Promise<Task[]> => {
+    this.tasks = await this.readFromStorage();
 
-      tasks = tasks.map((task) => {
-        if (task.id === id) {
-          if (text) {
-            task.text = text.replace(/[<>]/gi, "");
-          }
-
-          if (status || status === false) {
-            task.status = status;
-          }
+    this.tasks = this.tasks.map((task) => {
+      if (task.id === id) {
+        if (text) {
+          task.text = text.replace(/[<>]/gi, "");
         }
 
-        return task;
+        if (status || status === false) {
+          task.status = status;
+        }
+      }
+
+      return task;
+    });
+
+    await this.saveInStorage(this.tasks);
+
+    return this.tasks;
+  };
+
+  sortBy = async (param1: string, param2: string): Promise<Task[]> => {
+    this.tasks = await this.readFromStorage();
+
+    if (param1 !== "tags") {
+      this.tasks = _.orderBy(this.tasks, param1, param2 as IValue);
+    } else {
+      const tags = param2
+        .split(",")
+        .map((tag) => tag.trim().toLowerCase())
+        .filter((tag) => tag !== "");
+
+      this.tasks = this.tasks.sort((a, b) => {
+        const counTagsA = a.tags.reduce(
+          (acc, cur) => (tags.includes(cur) ? 1 : 0) + acc,
+          0
+        );
+        const counTagsB = b.tags.reduce(
+          (acc, cur) => (tags.includes(cur) ? 1 : 0) + acc,
+          0
+        );
+
+        if (counTagsA < counTagsB) {
+          return 1;
+        }
+        if (counTagsA > counTagsB) {
+          return -1;
+        }
+        return 0;
       });
+    }
 
-      saveInStorage(tasks);
-
-      res(tasks);
-    });
+    return this.tasks;
   };
 
-  static sortBy: ISortBy = (param1, param2) => {
-    return new Promise((res, rej) => {
-      let tasks = readFromStorage();
+  private async saveInStorage(tasks: Task[]): Promise<void> {
+    localStorage.setItem(this.dbName, JSON.stringify(tasks));
+  }
 
-      switch (param1) {
-        // Сортировка по алфавиту.
-        case filterData[0].id: {
-          switch (param2) {
-            // по возрастанию.
-            case `${filterData[0].id}1`:
-              tasks = tasks.sort((a, b) => {
-                if (a.text > b.text) {
-                  return 1;
-                }
-                if (a.text < b.text) {
-                  return -1;
-                }
-                return 0;
-              });
-              break;
+  private readFromStorage = async (): Promise<Task[]> => {
+    try {
+      const items = localStorage.getItem(this.dbName);
 
-            // по убыванию.
-            case `${filterData[0].id}2`:
-              tasks = tasks.sort((a, b) => {
-                if (a.text < b.text) {
-                  return 1;
-                }
-                if (a.text > b.text) {
-                  return -1;
-                }
-                return 0;
-              });
-              break;
-
-            default:
-              break;
-          }
-          break;
-        }
-
-        // Сортировка по дате.
-        case filterData[1].id: {
-          switch (param2) {
-            // сначала новые записи.
-            case `${filterData[1].id}1`:
-              tasks = tasks.sort(
-                (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
-              );
-              break;
-
-            // сначала старрые записи.
-            case `${filterData[1].id}2`:
-              tasks = tasks.sort(
-                (a, b) => a.createdAt.getTime() - b.createdAt.getTime()
-              );
-              break;
-
-            default:
-              break;
-          }
-          break;
-        }
-
-        // Сортировка по статусу.
-        case filterData[2].id: {
-          switch (param2) {
-            // выполненные.
-            case `${filterData[2].id}1`:
-              tasks = tasks.sort((a, b) => {
-                if (!a.status && b.status) {
-                  return 1;
-                }
-                if (a.status && !b.status) {
-                  return -1;
-                }
-                return 0;
-              });
-              break;
-
-            // невыполненные.
-            case `${filterData[2].id}2`:
-              tasks = tasks.sort((a, b) => {
-                if (a.status && !b.status) {
-                  return 1;
-                }
-                if (!a.status && b.status) {
-                  return -1;
-                }
-                return 0;
-              });
-              break;
-
-            default:
-              break;
-          }
-          break;
-        }
-
-        // Сортировка по тегам.
-        case filterData[3].id: {
-          const tags = param2
-            .split(",")
-            .map((tag) => tag.trim().toLowerCase())
-            .filter((tag) => tag !== "");
-
-          tasks = tasks.sort((a, b) => {
-            const counTagsA = a.tags.reduce(
-              (acc, cur) => (tags.includes(cur) ? 1 : 0) + acc,
-              0
-            );
-            const counTagsB = b.tags.reduce(
-              (acc, cur) => (tags.includes(cur) ? 1 : 0) + acc,
-              0
-            );
-
-            if (counTagsA < counTagsB) {
-              return 1;
-            }
-            if (counTagsA > counTagsB) {
-              return -1;
-            }
-            return 0;
-          });
-          break;
-        }
-
-        default:
-          break;
+      if (items) {
+        return JSON.parse(items, (key, value) =>
+          key === "createdAt" ? new Date(value) : value
+        );
       }
 
-      res(tasks);
-    });
+      return [];
+    } catch (e) {
+      return [];
+    }
   };
 }

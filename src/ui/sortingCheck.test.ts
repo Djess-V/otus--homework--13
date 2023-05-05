@@ -1,6 +1,7 @@
 import { createStartUI } from "./createStartUI";
 
-const sleep = (delay: number) => setTimeout(() => delay, delay);
+const sleep = (delay: number) =>
+  new Promise((resolve) => setTimeout(resolve, delay));
 
 describe("sorting check", () => {
   let element: HTMLElement;
@@ -45,7 +46,7 @@ describe("sorting check", () => {
     buttonFilter.click();
 
     const buttonAlphabet = element.querySelector(
-      ".item-filter-body__radio_pos_left-alphabet"
+      ".item-filter-body__radio_pos_left-text"
     ) as HTMLInputElement;
 
     buttonAlphabet.checked = true;
@@ -71,14 +72,14 @@ describe("sorting check", () => {
       buttonFilter.click();
 
       const buttonAlphabet = element.querySelector(
-        ".item-filter-body__radio_pos_left-alphabet"
+        ".item-filter-body__radio_pos_left-text"
       ) as HTMLInputElement;
 
       buttonAlphabet.checked = true;
       buttonAlphabet.dispatchEvent(new Event("change"));
 
       const buttonAscending = element.querySelector(
-        ".item-filter-body__radio_pos_right-alphabet1"
+        ".item-filter-body__radio_pos_right-text1"
       ) as HTMLInputElement;
 
       buttonAscending.checked = true;
@@ -104,14 +105,14 @@ describe("sorting check", () => {
       buttonFilter.click();
 
       const buttonAlphabet = element.querySelector(
-        ".item-filter-body__radio_pos_left-alphabet"
+        ".item-filter-body__radio_pos_left-text"
       ) as HTMLInputElement;
 
       buttonAlphabet.checked = true;
       buttonAlphabet.dispatchEvent(new Event("change"));
 
       const buttonDescending = element.querySelector(
-        ".item-filter-body__radio_pos_right-alphabet2"
+        ".item-filter-body__radio_pos_right-text2"
       ) as HTMLInputElement;
 
       buttonDescending.checked = true;
@@ -139,14 +140,14 @@ describe("sorting check", () => {
       buttonFilter.click();
 
       const buttonDate = element.querySelector(
-        ".item-filter-body__radio_pos_left-date"
+        ".item-filter-body__radio_pos_left-createdAt"
       ) as HTMLInputElement;
 
       buttonDate.checked = true;
       buttonDate.dispatchEvent(new Event("change"));
 
       const buttonNewOnes = element.querySelector(
-        ".item-filter-body__radio_pos_right-date1"
+        ".item-filter-body__radio_pos_right-createdAt1"
       ) as HTMLInputElement;
 
       buttonNewOnes.checked = true;
@@ -172,14 +173,14 @@ describe("sorting check", () => {
       buttonFilter.click();
 
       const buttonDate = element.querySelector(
-        ".item-filter-body__radio_pos_left-date"
+        ".item-filter-body__radio_pos_left-createdAt"
       ) as HTMLInputElement;
 
       buttonDate.checked = true;
       buttonDate.dispatchEvent(new Event("change"));
 
       const buttonOldOnes = element.querySelector(
-        ".item-filter-body__radio_pos_right-date2"
+        ".item-filter-body__radio_pos_right-createdAt2"
       ) as HTMLInputElement;
 
       buttonOldOnes.checked = true;
@@ -285,7 +286,7 @@ describe("sorting check", () => {
       buttonFilter.click();
 
       const buttonTag = element.querySelector(
-        ".item-filter-body__radio_pos_left-tag"
+        ".item-filter-body__radio_pos_left-tags"
       ) as HTMLInputElement;
 
       buttonTag.checked = true;

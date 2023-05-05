@@ -1,6 +1,6 @@
-import { LocalStorage } from "../api/LocalStorage";
 import { Task } from "../api/Task";
 import { drawTasks } from "./drawTasks";
+import { storage } from "../storage/storage";
 
 interface CreateModal {
   (element: HTMLElement): void;
@@ -89,7 +89,7 @@ export const showModalCreateTask: CreateModal = (element) => {
         errorMessage.style.display = "";
       }, 7000);
     } else {
-      const tasks = await LocalStorage.createTask(
+      const tasks = await storage.createTask(
         new Task(inputText.value, inputTags.value)
       );
 

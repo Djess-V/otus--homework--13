@@ -1,7 +1,7 @@
-import { LocalStorage } from "../api/LocalStorage";
 import { drawTasks } from "./drawTasks";
 import { Task } from "../api/Task";
 import { filterData } from "../api/constants";
+import { storage } from "../storage/storage";
 
 interface IFilterModal {
   (element: HTMLElement): void;
@@ -33,14 +33,16 @@ export const showModalFilter: IFilterModal = (element) => {
             i !== 3
               ? `
           <label class='item-filter-body__label' for='${item.id}Up' >${
-                  item.subTitle1
+                  item.subTitle1.text
                 }</label>
           <input id='${
             item.id
           }Up' class='item-filter-body__radio item-filter-body__radio_pos_right item-filter-body__radio_pos_right-${
                   item.id
-                }1' type='radio' name='filter-${i + 1}' value='${item.id}1' />`
-              : `<label class='item-filter-body__label_type_tag' for='${item.id}' >${item.subTitle1}</label>
+                }1' type='radio' name='filter-${i + 1}' value=${
+                  item.subTitle1.value
+                } />`
+              : `<label class='item-filter-body__label_type_tag' for='${item.id}' >${item.subTitle1.text}</label>
           <input id='${item.id}' class="item-filter-body__tag-input _input" placeholder='Через запятую' />`
           }
         </div>
@@ -49,13 +51,13 @@ export const showModalFilter: IFilterModal = (element) => {
           i !== 3
             ? `<div class='right-filter-body__down'>
           <label class='item-filter-body__label' for='${item.id}Down' >${
-                item.subTitle2
+                item.subTitle2.text
               }</label>
           <input class='item-filter-body__radio item-filter-body__radio_pos_right item-filter-body__radio_pos_right-${
             item.id
-          }2' type='radio' id='${item.id}Down' name='filter-${i + 1}' value='${
-                item.id
-              }2' />
+          }2' type='radio' id='${item.id}Down' name='filter-${i + 1}' value=${
+                item.subTitle2.value
+              } />
         </div>`
             : ""
         }                                      
@@ -162,7 +164,7 @@ export const showModalFilter: IFilterModal = (element) => {
     );
 
     if (checkedRadios.length === 2) {
-      tasks = await LocalStorage.sortBy(
+      tasks = await storage.sortBy(
         checkedRadios[0].value,
         checkedRadios[1].value
       );
@@ -170,13 +172,13 @@ export const showModalFilter: IFilterModal = (element) => {
       buttonCancel.click();
     } else if (
       checkedRadios.length === 1 &&
-      checkedRadios[0].value === "tag" &&
+      checkedRadios[0].value === "tags" &&
       tagInput.value !== "" &&
       /^([а-яА-Яa-zA-Z0-9]+\s?)$|^([а-яА-Яa-zA-Z0-9]+,\s?)+/.test(
         tagInput.value
       )
     ) {
-      tasks = await LocalStorage.sortBy(checkedRadios[0].value, tagInput.value);
+      tasks = await storage.sortBy(checkedRadios[0].value, tagInput.value);
       drawTasks(element, tasks);
       buttonCancel.click();
     } else {

@@ -1,14 +1,14 @@
 import { drawTasks } from "./drawTasks";
-import { LocalStorage } from "../api/LocalStorage";
 import { showModalCreateTask } from "./showModalCreateTask";
 import { showModalFilter } from "./showModalFilter";
+import { storage } from "../storage/storage";
 
 interface CreateUI {
   (element: HTMLElement): void;
 }
 
 export const createStartUI: CreateUI = async (element) => {
-  let tasks = await LocalStorage.createStorage();
+  let tasks = await storage.createStorage();
 
   element.innerHTML = `
    <h1 class="app__title">Календарь задач</h1>
@@ -37,7 +37,7 @@ export const createStartUI: CreateUI = async (element) => {
       ".form-search__inpit"
     ) as HTMLInputElement;
 
-    tasks = await LocalStorage.search(inputSearch.value.toLowerCase().trim());
+    tasks = await storage.search(inputSearch.value.toLowerCase().trim());
 
     if (tasks.length === 0) {
       const message = element.querySelector(
@@ -69,7 +69,7 @@ export const createStartUI: CreateUI = async (element) => {
   ) as HTMLButtonElement;
 
   buttonFetchAll.addEventListener("click", async (e) => {
-    tasks = await LocalStorage.fetchAll();
+    tasks = await storage.fetchAll();
 
     if (tasks.length === 0) {
       const appMessage = element.querySelector(".app__message") as HTMLElement;

@@ -1,26 +1,43 @@
-export const filterData = [
+export type IValue = "asc" | "desc";
+
+interface IFilterObj {
+  id: string;
+  title: string;
+  subTitle1: {
+    text: string;
+    value: IValue;
+  };
+  subTitle2: {
+    text: string;
+    value: IValue;
+  };
+}
+
+type IFilterData = IFilterObj[];
+
+export const filterData: IFilterData = [
   {
-    id: "alphabet",
+    id: "text",
     title: "Алфавиту",
-    subTitle1: "возрастанию",
-    subTitle2: "убыванию",
+    subTitle1: { text: "от А до Я", value: "asc" },
+    subTitle2: { text: "от Я до А", value: "desc" },
   },
   {
-    id: "date",
+    id: "createdAt",
     title: "Дате",
-    subTitle1: "сначала новые",
-    subTitle2: "сначала старые",
+    subTitle1: { text: "сначала новые", value: "desc" },
+    subTitle2: { text: "сначала старые", value: "asc" },
   },
   {
     id: "status",
     title: "Статусу",
-    subTitle1: "выполненно",
-    subTitle2: "невыполненно",
+    subTitle1: { text: "выполненно", value: "desc" },
+    subTitle2: { text: "невыполненно", value: "asc" },
   },
   {
-    id: "tag",
+    id: "tags",
     title: "Тегам",
-    subTitle1: "Введите теги",
-    subTitle2: "",
+    subTitle1: { text: "Введите теги", value: "asc" },
+    subTitle2: { text: "", value: "desc" },
   },
 ];

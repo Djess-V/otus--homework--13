@@ -1,6 +1,6 @@
 import { Task } from "../api/Task";
-import { LocalStorage } from "../api/LocalStorage";
 import { showModalUpdateTask } from "./showModalUpdateTask";
+import { storage } from "../storage/storage";
 
 export function drawTasks(element: HTMLElement, tasks: Task[]) {
   const listTasks = element.querySelector(".app__tasks") as HTMLElement;
@@ -61,7 +61,7 @@ export function drawTasks(element: HTMLElement, tasks: Task[]) {
           listTasks.innerHTML = "";
         }
 
-        await LocalStorage.delete(id);
+        await storage.delete(id);
       }
     });
   }
@@ -89,7 +89,7 @@ export function drawTasks(element: HTMLElement, tasks: Task[]) {
       const id = target?.parentElement?.parentElement?.id;
 
       if (id) {
-        await LocalStorage.update(id, "", input.checked);
+        await storage.update(id, "", input.checked);
       }
     });
   }

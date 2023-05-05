@@ -1,5 +1,4 @@
-import { LocalStorage } from "../api/LocalStorage";
-import { drawTasks } from "./drawTasks";
+import { storage } from "../storage/storage";
 
 interface UpdateModal {
   (element: HTMLElement, id: string): void;
@@ -83,7 +82,7 @@ export const showModalUpdateTask: UpdateModal = (element, id) => {
 
       buttonCancel.click();
 
-      await LocalStorage.update(id, newText);
+      await storage.update(id, newText);
     }
   });
 };

@@ -1,5 +1,5 @@
-import "./sass/styles.scss";
 import { createStartUI } from "./ui/createStartUI";
+import "./sass/styles.scss";
 
 const element = document.getElementById("app");
 

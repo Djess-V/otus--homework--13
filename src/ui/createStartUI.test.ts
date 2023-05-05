@@ -1,6 +1,7 @@
 import { createStartUI } from "./createStartUI";
 
-const sleep = (delay: number) => setTimeout(() => delay, delay);
+const sleep = (delay: number) =>
+  new Promise((resolve) => setTimeout(resolve, delay));
 
 describe("createStartUI", () => {
   let element: HTMLElement;
