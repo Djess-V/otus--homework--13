@@ -1,3 +1,8 @@
-const hello = "Hello";
+import { createStartUI } from "./ui/createStartUI";
+import "./sass/styles.scss";
 
-console.log(hello);
+const element = document.getElementById("app");
+
+if (element) {
+  createStartUI(element);
+}
